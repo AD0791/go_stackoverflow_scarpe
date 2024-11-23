@@ -11,12 +11,18 @@ import (
 
 var AppConfig *Config
 
+// TODO FIX THE PATH TO BE UNIX/UNIQUE
+const (
+	PROJECT_PATH  = "/Users/ad0791/Desktop/go_stackoverflow_scarpe"
+	ENV_FILE_PATH = "/Users/ad0791/Desktop/go_stackoverflow_scarpe/.env"
+)
+
 func LoadConfig() (*Config, error) {
 	v := viper.New()
 
-	v.AddConfigPath("/Users/ad0791/Desktop/go_stackoverflow_scarpe") // look for the config file in the current directory
+	v.AddConfigPath(PROJECT_PATH) // look for the config file in the current directory
 
-	if err := godotenv.Load("/Users/ad0791/Desktop/go_stackoverflow_scarpe/.env"); err != nil {
+	if err := godotenv.Load(ENV_FILE_PATH); err != nil {
 		log.Println("Warning: Could not load .env file, falling back to environment variables")
 		log.Println("Warning: Could not load .env file, falling back to environment variables")
 	}
