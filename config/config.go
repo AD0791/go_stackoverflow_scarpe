@@ -3,6 +3,8 @@ package config
 import (
 	"fmt"
 	"log"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/joho/godotenv"
@@ -11,18 +13,29 @@ import (
 
 var AppConfig *Config
 
-// TODO FIX THE PATH TO BE UNIX/UNIQUE
-const (
-	PROJECT_PATH  = "/Users/ad0791/Desktop/go_stackoverflow_scarpe"
-	ENV_FILE_PATH = "/Users/ad0791/Desktop/go_stackoverflow_scarpe/.env"
-)
+func getProjectRoot() string {
+	pwd, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// If we're in a subdirectory (like /config), we need to go up one level
+	if filepath.Base(pwd) == "config" {
+		return filepath.Dir(pwd)
+	}
+
+	return pwd
+}
 
 func LoadConfig() (*Config, error) {
+	projectRoot := getProjectRoot()
+
 	v := viper.New()
 
-	v.AddConfigPath(PROJECT_PATH) // look for the config file in the current directory
-
-	if err := godotenv.Load(ENV_FILE_PATH); err != nil {
+	// Add project root as config path
+	v.AddConfigPath(projectRoot)
+	envPath := filepath.Join(projectRoot, ".env")
+	if err := godotenv.Load(envPath); err != nil {
 		log.Println("Warning: Could not load .env file, falling back to environment variables")
 		log.Println("Warning: Could not load .env file, falling back to environment variables")
 	}
