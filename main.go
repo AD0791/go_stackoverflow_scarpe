@@ -18,12 +18,12 @@ func main() {
 	// Use configuration values
 	log.Printf("Starting %s in %s mode on port %d",
 		cfg.AppName,
-		cfg.Environment,
-		cfg.Port,
+		cfg.Server.ProjectEnv,
+		cfg.Server.Port,
 	)
 
 	// Example of accessing Database URL
 	log.Printf("Database URL: %s", cfg.DatabaseURL)
 
-	http.ListenAndServe(":"+strconv.Itoa(cfg.Port), nil)
+	http.ListenAndServe(":"+strconv.Itoa(cfg.Server.Port), nil)
 }

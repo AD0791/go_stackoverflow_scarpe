@@ -1,54 +1,56 @@
 package config
 
 import (
+	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
-//TODO fix viper -> viper must see root_path where config files are.
-//TODO fix viper -> .env
-//TODO fix viper -> yml
-//TODO fix viper -> fix the main
-
 var AppConfig *Config
 
 func LoadConfig() (*Config, error) {
-	RootPath := viper.GetString("root_path")
-	// Load .env file
-	if err := godotenv.Load(); err != nil {
+	v := viper.New()
+
+	v.AddConfigPath("/Users/ad0791/Desktop/go_stackoverflow_scarpe") // look for the config file in the current directory
+
+	if err := godotenv.Load("/Users/ad0791/Desktop/go_stackoverflow_scarpe/.env"); err != nil {
+		log.Println("Warning: Could not load .env file, falling back to environment variables")
 		log.Println("Warning: Could not load .env file, falling back to environment variables")
 	}
 
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(RootPath) // look for the config file in the current directory
+	// Set default values
+	v.SetDefault("app_name", "GoScraper")
+	v.SetDefault("server.port", 8080)
+	v.SetDefault("server.project_env", "development")
+	v.SetDefault("server.root_path", "/")
+	v.SetDefault("swaggerDoc.enable", true)
+	v.SetDefault("logs.log_level", "debug")
 
-	// Read environment variables as a fallback
-	viper.AutomaticEnv()
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	// Configure Viper for YAML
+	v.SetConfigName("config")
+	v.SetConfigType("yaml")
+	//v.SetEnvPrefix("APP")
 
-	if err := viper.ReadInConfig(); err != nil {
+	if err := v.ReadInConfig(); err != nil {
 		log.Fatalf("Could not load configuration file: %v", err)
+		return nil, fmt.Errorf("Could not load configuration file: %v", err)
 	}
 
-	// Map environment variables (like DATABASE_URL)
-	dbURL := os.Getenv("DATABASE_URL")
-	if dbURL == "" {
-		log.Println("Warning: DATABASE_URL is not set in .env or environment")
+	v.AutomaticEnv()
+	v.SetEnvKeyReplacer(strings.NewReplacer(`.`, `_`))
+
+	if err := v.Unmarshal(&AppConfig); err != nil {
+		log.Fatalf("Could not build the AppConfig type: %v", err)
+		return nil, fmt.Errorf("Could not build the AppConfig type: %v", err)
+
 	}
 
-	AppConfig := &Config{
-		AppName:       viper.GetString("app_name"),
-		Port:          viper.GetInt("port"),
-		Environment:   viper.GetString("env"),
-		EnableSwagger: viper.GetBool("enable_swagger"),
-		LogLevel:      viper.GetString("log_level"),
-		RootPath:      viper.GetString("root_path"),
-		DatabaseURL:   dbURL, // Read DATABASE_URL from .env
+	// Handle DATABASE_URL separately since it's a direct environment variable
+	if dbURL := v.GetString("DATABASE_URL"); dbURL != "" {
+		AppConfig.DatabaseURL = dbURL
 	}
 
 	log.Printf("Configuration loaded: %+v", AppConfig)
