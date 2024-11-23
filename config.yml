@@ -1,0 +1,6 @@
+app_name: GoScraper
+port: 8080
+env: development
+enable_swagger: true
+log_level: debug
+root_path: "./"
