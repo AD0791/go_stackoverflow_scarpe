@@ -15,6 +15,15 @@ func NewHomeController() *HomeController {
 	return &HomeController{}
 }
 
+// GetHome handles the root route.
+//
+// @Summary Show Scraper Home Endpoint
+// @Description Get the welcome message for the API
+// @Tags Home
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} models.ApiResponse
+// @Router / [get]
 func (*HomeController) GetHome(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	response := models.ApiResponse{
 		Message: "Welcome to GoScraper API",

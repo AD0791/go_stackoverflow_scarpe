@@ -1,9 +1,12 @@
 package router
 
 import (
+	"net/http"
+
 	"github.com/AD0791/SO/scraper/config"
 	"github.com/AD0791/SO/scraper/controllers"
 	"github.com/julienschmidt/httprouter"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type Router struct {
@@ -23,6 +26,9 @@ func NewRouter(cfg *config.Config) *Router {
 func (r *Router) Setup() *httprouter.Router {
 	// Register routes
 	r.router.GET(r.config.Server.RootPath, r.homeCtrl.GetHome)
+
+	// Swagger endpoint
+	r.router.Handler(http.MethodGet, "/swagger/*any", httpSwagger.WrapHandler)
 
 	return r.router
 }

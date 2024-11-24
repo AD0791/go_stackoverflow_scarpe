@@ -1,0 +1,30 @@
+basePath: /
+definitions:
+  models.ApiResponse:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API documentation for GoScraper.
+  title: GoScraper API
+  version: "1.0"
+paths:
+  /:
+    get:
+      consumes:
+      - application/json
+      description: Get the welcome message for the API
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ApiResponse'
+      summary: Show Scraper Home Endpoint
+      tags:
+      - Home
+swagger: "2.0"
