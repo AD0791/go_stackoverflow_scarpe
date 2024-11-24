@@ -1,29 +1,40 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/AD0791/SO/scraper/config"
+	"github.com/AD0791/SO/scraper/router"
 )
 
 func main() {
 	// Load configuration
 	cfg, err := config.LoadConfig()
 	if err != nil {
-		log.Printf("failed to load configuration: %v", err)
+		log.Fatalf("failed to load configuration: %v", err)
 	}
 
-	// Use configuration values
+	// Initialize router
+	r := router.NewRouter(cfg)
+
+	// Setup routes
+	handler := r.Setup()
+
+	// Create server address
+	addr := fmt.Sprintf(":%d", cfg.Server.Port)
+
+	// Log startup information
 	log.Printf("Starting %s in %s mode on port %d",
 		cfg.AppName,
 		cfg.Server.ProjectEnv,
 		cfg.Server.Port,
 	)
+	log.Printf("API root path: %s", cfg.Server.RootPath)
 
-	// Example of accessing Database URL
-	log.Printf("Database URL: %s", cfg.DatabaseURL)
-
-	http.ListenAndServe(":"+strconv.Itoa(cfg.Server.Port), nil)
+	// Start the server
+	if err := http.ListenAndServe(addr, handler); err != nil {
+		log.Fatalf("Server failed to start: %v", err)
+	}
 }
