@@ -6,9 +6,15 @@ import (
 	"net/http"
 
 	"github.com/AD0791/SO/scraper/config"
+	_ "github.com/AD0791/SO/scraper/docs" // Import generated docs
 	"github.com/AD0791/SO/scraper/router"
 )
 
+// @title GoScraper API
+// @version 1.0
+// @description API documentation for GoScraper.
+// @host localhost:8080
+// @BasePath /
 func main() {
 	// Load configuration
 	cfg, err := config.LoadConfig()

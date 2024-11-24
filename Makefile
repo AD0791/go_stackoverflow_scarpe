@@ -1,2 +1,2 @@
-swagger:
-	init
+swag_init:
+	swag init
