@@ -2,8 +2,15 @@ basePath: /
 definitions:
   models.ApiResponse:
     properties:
+      data:
+        description: Optional, for successful responses
+      error:
+        description: Optional, for error details
+        type: string
       message:
         type: string
+      status_code:
+        type: integer
     type: object
 host: localhost:8080
 info:
@@ -14,17 +21,17 @@ info:
 paths:
   /:
     get:
-      consumes:
-      - application/json
-      description: Get the welcome message for the API
-      produces:
-      - application/json
+      description: Returns a welcome message
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/models.ApiResponse'
-      summary: Show Scraper Home Endpoint
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ApiResponse'
+      summary: Get the home message
       tags:
       - Home
 swagger: "2.0"

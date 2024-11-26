@@ -17,20 +17,20 @@ const docTemplate = `{
     "paths": {
         "/": {
             "get": {
-                "description": "Get the welcome message for the API",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
+                "description": "Returns a welcome message",
                 "tags": [
                     "Home"
                 ],
-                "summary": "Show Scraper Home Endpoint",
+                "summary": "Get the home message",
                 "responses": {
                     "200": {
                         "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ApiResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/models.ApiResponse"
                         }
@@ -43,8 +43,18 @@ const docTemplate = `{
         "models.ApiResponse": {
             "type": "object",
             "properties": {
+                "data": {
+                    "description": "Optional, for successful responses"
+                },
+                "error": {
+                    "description": "Optional, for error details",
+                    "type": "string"
+                },
                 "message": {
                     "type": "string"
+                },
+                "status_code": {
+                    "type": "integer"
                 }
             }
         }

@@ -1,10 +1,9 @@
 package controllers
 
 import (
-	"encoding/json"
 	"net/http"
 
-	"github.com/AD0791/SO/scraper/models"
+	"github.com/AD0791/SO/scraper/utils"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -22,12 +21,6 @@ func NewHomeController() *HomeController {
 // @Failure 500 {object} models.ApiResponse
 // @Router / [get]
 func (*HomeController) GetHome(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	response := models.ApiResponse{
-		StatusCode: http.StatusOK,
-		Message:    "Welcome to GoScraper API",
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response)
+	/* pattern can be replicate for a repositry */
+	utils.SendResponse(w, http.StatusOK, "Welcome to GoScraper API", nil, "")
 }
