@@ -12,6 +12,28 @@ definitions:
       status_code:
         type: integer
     type: object
+  models.Question:
+    properties:
+      answers:
+        type: integer
+      title:
+        type: string
+      user:
+        type: string
+      views:
+        type: integer
+      votes:
+        type: integer
+    type: object
+  models.QuestionsResponse:
+    properties:
+      questions:
+        items:
+          $ref: '#/definitions/models.Question'
+        type: array
+      total:
+        type: integer
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -34,4 +56,20 @@ paths:
       summary: Get the home message
       tags:
       - Home
+  /scrape/stackoverflow:
+    get:
+      description: Retrieves the latest StackOverflow questions and returns them as
+        a JSON response
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.QuestionsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Scrape StackOverflow Questions
+      tags:
+      - Scraping
 swagger: "2.0"
